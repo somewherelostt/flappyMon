@@ -16,14 +16,13 @@ export default function GameOverOverlay({
 }: GameOverOverlayProps) {
   const { address, isConnected } = useAccount();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [txHash, setTxHash] = useState<string | null>(null);
+  const [submitted, setSubmitted] = useState(false);
 
   // Fixed reward amount
   const FIXED_REWARD = "0.000000001"; // Fixed reward in MON
 
   const handleSubmitScore = async () => {
     if (!isConnected) {
-      alert("Please connect your wallet first!");
       return;
     }
 
@@ -45,28 +44,12 @@ export default function GameOverOverlay({
       const data = await response.json();
 
       if (data.success) {
-        // Generate a mock transaction hash for display
-        const mockTxHash =
-          "0x" +
-          Array.from({ length: 64 }, () =>
-            Math.floor(Math.random() * 16).toString(16)
-          ).join("");
-
-        setTxHash(mockTxHash);
-
-        if (data.isNewHighScore) {
-          alert(`🎉 ${data.message}\nReward: ${FIXED_REWARD} MON`);
-        } else {
-          alert(
-            `${data.message}\nYour high score: ${data.currentHighScore}\nReward: ${FIXED_REWARD} MON`
-          );
-        }
+        setSubmitted(true);
       } else {
         throw new Error(data.error || "Failed to submit score");
       }
     } catch (error) {
       console.error("Error submitting score:", error);
-      alert("Failed to submit score. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -107,29 +90,24 @@ export default function GameOverOverlay({
             </div>
           </div>
 
-          {/* Transaction status */}
-          {txHash && (
+          {/* Submission status */}
+          {submitted && (
             <div className="mb-6 p-4 bg-green-900/30 border-2 border-green-500 rounded">
               <div className="pixel-font text-xs text-green-400 mb-2">
-                ✓ SUBMITTED
-              </div>
-              <div className="text-xs text-white/60 break-all font-mono">
-                {txHash.slice(0, 20)}...
+                ✓ SCORE SUBMITTED
               </div>
             </div>
           )}
 
           {/* Buttons */}
           <div className="space-y-3">
-            {!txHash && isConnected && (
+            {!submitted && isConnected && (
               <button
                 onClick={handleSubmitScore}
                 disabled={isSubmitting}
                 className="w-full pixel-button pixel-font text-sm text-white uppercase tracking-wider disabled:opacity-50"
               >
-                {isSubmitting
-                  ? "Verifying on Monad..."
-                  : "Submit Score to Chain"}
+                {isSubmitting ? "Submitting..." : "Submit Score"}
               </button>
             )}
 

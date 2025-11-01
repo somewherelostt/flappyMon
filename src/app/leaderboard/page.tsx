@@ -104,9 +104,9 @@ export default function LeaderboardPage() {
         {/* Leaderboard panel */}
         <div className="pixel-border bg-gradient-to-b from-indigo-950/80 to-purple-950/80 backdrop-blur-sm rounded-lg overflow-hidden">
           {/* Header row */}
-          <div className="grid grid-cols-12 gap-4 p-4 border-b-2 border-cyan-500/30 bg-black/30">
+          <div className="grid grid-cols-10 gap-4 p-4 border-b-2 border-cyan-500/30 bg-black/30">
             <div className="col-span-1 pixel-font text-xs text-cyan-400">#</div>
-            <div className="col-span-5 pixel-font text-xs text-cyan-400">
+            <div className="col-span-3 pixel-font text-xs text-cyan-400">
               WALLET
             </div>
             <div className="col-span-2 pixel-font text-xs text-cyan-400 text-center">
@@ -155,7 +155,7 @@ export default function LeaderboardPage() {
               entries.map((entry, index) => (
                 <div
                   key={entry.address}
-                  className="grid grid-cols-12 gap-4 p-4 border-b border-purple-500/10 hover:bg-purple-500/10 transition-colors"
+                  className="grid grid-cols-10 gap-4 p-4 border-b border-purple-500/10 hover:bg-purple-500/10 transition-colors"
                 >
                   {/* Rank */}
                   <div className="col-span-1 pixel-font text-sm text-white flex items-center">
@@ -166,8 +166,8 @@ export default function LeaderboardPage() {
                   </div>
 
                   {/* Address */}
-                  <div className="col-span-5 font-mono text-xs text-purple-300 flex items-center truncate">
-                    {entry.address.slice(0, 8)}...{entry.address.slice(-6)}
+                  <div className="col-span-3 font-mono text-xs text-purple-300 flex items-center truncate">
+                    {entry.address.slice(0, 6)}...{entry.address.slice(-4)}
                   </div>
 
                   {/* Score */}

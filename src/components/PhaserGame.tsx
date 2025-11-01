@@ -28,6 +28,7 @@ export default function PhaserGame({
       private isGameOver: boolean = false;
       private spaceKey!: Phaser.Input.Keyboard.Key;
       private obstacleTimer?: Phaser.Time.TimerEvent;
+      private scoredPairs: Set<number> = new Set();
 
       constructor() {
         super({ key: "GameScene" });
@@ -151,15 +152,20 @@ export default function PhaserGame({
           this.gameOver();
         }
 
-        // Remove off-screen obstacles and count score
+        // Score when alien passes the obstacle (once per pair)
         this.obstacles.children.entries.forEach((obstacle: any) => {
+          const pairId = obstacle.getData("pairId");
+
+          // Score when the obstacle passes behind the alien
+          if (obstacle.x + 25 < this.alien.x && !this.scoredPairs.has(pairId)) {
+            this.scoredPairs.add(pairId);
+            this.score++;
+            onScoreUpdate(this.score);
+            this.cameras.main.flash(100);
+          }
+
+          // Clean up obstacles that are off-screen
           if (obstacle.x < -50) {
-            if (!obstacle.getData("scored")) {
-              this.score++;
-              obstacle.setData("scored", true);
-              onScoreUpdate(this.score);
-              this.cameras.main.flash(100);
-            }
             obstacle.destroy();
           }
         });
@@ -178,6 +184,9 @@ export default function PhaserGame({
         const maxHeight = this.scale.height - 80 - gap - minHeight;
         const topHeight = Phaser.Math.Between(minHeight, maxHeight);
 
+        // Create a unique pair ID for this obstacle pair
+        const pairId = Date.now() + Math.random();
+
         // Top obstacle
         const topObstacle = this.obstacles.create(
           this.scale.width + 25, // Spawn off-screen to the right
@@ -189,6 +198,7 @@ export default function PhaserGame({
         topObstacle.setVelocityX(-200);
         topObstacle.body.allowGravity = false;
         topObstacle.setData("scored", false); // Initialize scored flag
+        topObstacle.setData("pairId", pairId); // Pair identifier
 
         // Bottom obstacle
         const bottomY = topHeight + gap;
@@ -203,6 +213,7 @@ export default function PhaserGame({
         bottomObstacle.setVelocityX(-200);
         bottomObstacle.body.allowGravity = false;
         bottomObstacle.setData("scored", false); // Initialize scored flag
+        bottomObstacle.setData("pairId", pairId); // Pair identifier
       }
 
       handleCollision(alien: any, obstacle: any) {

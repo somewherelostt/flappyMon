@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import dynamic from 'next/dynamic';
-import StartScreen from '@/components/StartScreen';
-import GameOverOverlay from '@/components/GameOverOverlay';
-import GameHUD from '@/components/GameHUD';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
+import StartScreen from "@/components/StartScreen";
+import GameOverOverlay from "@/components/GameOverOverlay";
+import GameHUD from "@/components/GameHUD";
 
 // Dynamic import to avoid SSR issues with Phaser
-const PhaserGame = dynamic(() => import('@/components/PhaserGame'), {
+const PhaserGame = dynamic(() => import("@/components/PhaserGame"), {
   ssr: false,
   loading: () => (
     <div className="flex items-center justify-center min-h-screen game-container">
@@ -19,23 +19,23 @@ const PhaserGame = dynamic(() => import('@/components/PhaserGame'), {
   ),
 });
 
-type GameState = 'start' | 'playing' | 'gameover';
+type GameState = "start" | "playing" | "gameover";
 
 export default function Home() {
   const router = useRouter();
-  const [gameState, setGameState] = useState<GameState>('start');
+  const [gameState, setGameState] = useState<GameState>("start");
   const [score, setScore] = useState(0);
   const [finalScore, setFinalScore] = useState(0);
 
-  const handlePlay = () => {
-    setGameState('playing');
+  const handlePlay = (txHash?: string) => {
+    setGameState("playing");
     setScore(0);
     setFinalScore(0);
   };
 
   const handleGameOver = (finalScore: number) => {
     setFinalScore(finalScore);
-    setGameState('gameover');
+    setGameState("gameover");
   };
 
   const handleScoreUpdate = (newScore: number) => {
@@ -43,7 +43,7 @@ export default function Home() {
   };
 
   const handleRestart = () => {
-    setGameState('playing');
+    setGameState("playing");
     setScore(0);
     setFinalScore(0);
     // Force remount of game
@@ -53,22 +53,22 @@ export default function Home() {
   };
 
   const handleHome = () => {
-    setGameState('start');
+    setGameState("start");
     setScore(0);
     setFinalScore(0);
   };
 
   const handleLeaderboard = () => {
-    router.push('/leaderboard');
+    router.push("/leaderboard");
   };
 
   return (
     <>
-      {gameState === 'start' && (
+      {gameState === "start" && (
         <StartScreen onPlay={handlePlay} onLeaderboard={handleLeaderboard} />
       )}
 
-      {gameState === 'playing' && (
+      {gameState === "playing" && (
         <div className="relative w-full h-screen game-container overflow-hidden">
           <GameHUD score={score} />
           <PhaserGame
@@ -78,7 +78,7 @@ export default function Home() {
         </div>
       )}
 
-      {gameState === 'gameover' && (
+      {gameState === "gameover" && (
         <div className="relative w-full h-screen game-container overflow-hidden">
           <PhaserGame
             onGameOver={handleGameOver}

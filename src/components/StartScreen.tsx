@@ -6,7 +6,7 @@ import { useAccount, useSendTransaction } from "wagmi";
 import { parseEther } from "viem";
 
 interface StartScreenProps {
-  onPlay: () => void;
+  onPlay: (txHash?: string) => void;
   onLeaderboard: () => void;
 }
 
@@ -43,16 +43,10 @@ export default function StartScreen({
   useEffect(() => {
     if (isSuccess && txHash) {
       setIsProcessing(false);
-      // Show explorer link
-      const explorerUrl = `https://testnet.monadexplorer.com/tx/${txHash}`;
-      alert(
-        `✅ Payment successful!\n\nView on Explorer:\n${explorerUrl}\n\nStarting game...`
-      );
-
-      // Wait a moment then start the game
+      // Start the game immediately after successful payment, passing the txHash
       setTimeout(() => {
-        onPlay();
-      }, 2000);
+        onPlay(txHash);
+      }, 1000);
     }
   }, [isSuccess, txHash, onPlay]);
 
