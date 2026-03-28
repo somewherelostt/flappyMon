@@ -1,4 +1,4 @@
-Demo: <https://youtu.be/9XcA9woanBs?t=3164>
+Demo: <
 
 # 🚀 MON-AD - Decentralized Advertising Platform
 
@@ -110,6 +110,14 @@ mon-AD/
 - **GitHub Repository**: <https://github.com/somewherelostt/maaz-blitz-delhi/>
 - **Working Branch**: BLITZ-DELHI-V3-MON-AD
 - **Live Demo**: (to be updated)
+
+### ⛓️ Deployed Contracts (Monad Testnet)
+
+- **MonadAdMarket (Logic)**: [`0x7e3c9284633bb5b58b8d6f3cf7fce906a89d24fc`](https://testnet.monadvision.com/address/0x7e3c9284633bb5b58b8d6f3cf7fce906a89d24fc)
+- **MonadAdRegistry (State)**: [`0xc0b7e1ae03c8b2c8fd78247d63f87cce790187eb`](https://testnet.monadvision.com/address/0xc0b7e1ae03c8b2c8fd78247d63f87cce790187eb)
+- **MonadAdVault (Payments)**: [`0xff17790b38d752b4ee47a772ea63eac2daa6913a`](https://testnet.monadvision.com/address/0xff17790b38d752b4ee47a772ea63eac2daa6913a)
+- **MockUSDC (Test Assets)**: [`0x4b017c27e6ad4b44002c25ca5f1ced94815cab75`](https://testnet.monadvision.com/address/0x4b017c27e6ad4b44002c25ca5f1ced94815cab75)
+
 - **Documentation Links**: (to be updated)
 
 ## 🚀 **Key Features**
