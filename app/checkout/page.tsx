@@ -130,11 +130,15 @@ function CheckoutPageContent() {
   const [queueInfo, setQueueInfo] = useState<QueueInfo | null>(null);
   const [bidAmount, setBidAmount] = useState<string>("");
   const [isBidding, setIsBidding] = useState<boolean>(false);
-  const [paymentMethod, setPaymentMethod] = useState<'mon' | 'contract' | 'x402'>('mon');
+  const [paymentMethod, setPaymentMethod] = useState<
+    "mon" | "contract" | "x402"
+  >("mon");
   const [customAmount, setCustomAmount] = useState<string>("0.00001");
 
   // Publisher wallet address (from env or default)
-  const PUBLISHER_WALLET = process.env.NEXT_PUBLIC_PUBLISHER_WALLET || "0x6d63C3DD44983CddEeA8cB2e730b82daE2E91E32";
+  const PUBLISHER_WALLET =
+    process.env.NEXT_PUBLIC_PUBLISHER_WALLET ||
+    "0x6d63C3DD44983CddEeA8cB2e730b82daE2E91E32";
 
   // Parse payment information from URL parameters
   useEffect(() => {
@@ -186,7 +190,15 @@ function CheckoutPageContent() {
         router.push(`/upload?${params.toString()}`);
       }, 1500);
     }
-  }, [hash, monHash, paymentInfo, address, customAmount, router, paymentMethod]);
+  }, [
+    hash,
+    monHash,
+    paymentInfo,
+    address,
+    customAmount,
+    router,
+    paymentMethod,
+  ]);
 
   const fetchQueueInfo = async (slotId: string) => {
     try {
@@ -205,14 +217,14 @@ function CheckoutPageContent() {
     if (!paymentInfo || !address) return;
 
     // MON native token payment
-    if (paymentMethod === 'mon') {
+    if (paymentMethod === "mon") {
       setConnectionStatus({ type: "loading", message: "Sending MON..." });
       sendMON(PUBLISHER_WALLET, customAmount);
       return;
     }
 
     // x402 payment (micropayments via facilitator)
-    if (paymentMethod === 'x402') {
+    if (paymentMethod === "x402") {
       await handleX402Payment();
       return;
     }
@@ -241,40 +253,50 @@ function CheckoutPageContent() {
     if (!walletClient || !paymentInfo) return;
 
     try {
-      setConnectionStatus({ type: "loading", message: "Setting up x402 payment..." });
+      setConnectionStatus({
+        type: "loading",
+        message: "Setting up x402 payment...",
+      });
 
-      const { createX402Client, fetchWithX402 } = await import("@/lib/x402-client");
+      const { createX402Client, fetchWithX402 } = await import(
+        "@/lib/x402-client"
+      );
       const client = createX402Client(walletClient);
-      
-      setConnectionStatus({ type: "loading", message: "Processing USDC payment via x402..." });
+
+      setConnectionStatus({
+        type: "loading",
+        message: "Processing USDC payment via x402...",
+      });
 
       const response = await fetchWithX402(
         client,
         `${window.location.origin}/api/x402-content?slotId=${paymentInfo.slotId}`,
         {
-          method: 'GET',
+          method: "GET",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       if (!response.ok) {
         if (response.status === 402) {
-          throw new Error('Payment required - insufficient funds or not approved');
+          throw new Error(
+            "Payment required - insufficient funds or not approved",
+          );
         }
         throw new Error(`Failed to fetch content: ${response.status}`);
       }
 
       const contentData = await response.json();
-      console.log('Content fetched via x402:', contentData);
+      console.log("Content fetched via x402:", contentData);
 
       const paymentData = {
-        txHash: 'x402-payment',
+        txHash: "x402-payment",
         amountPaid: customAmount,
         payerAddress: address,
         validUpto: Math.floor(Date.now() / 1000) + 3600,
-        paymentMethod: 'x402',
+        paymentMethod: "x402",
       };
 
       sessionStorage.setItem("paymentData", JSON.stringify(paymentData));
@@ -284,21 +306,19 @@ function CheckoutPageContent() {
       setConnectionStatus({ type: "success", message: "Payment successful!" });
 
       setTimeout(() => {
-        const params = new URLSearchParams({
-          slotId: paymentInfo.slotId,
-          price: paymentInfo.price,
-          bidAmount: customAmount,
-          size: paymentInfo.size,
-          transactionHash: 'x402-payment',
-          walletAddress: address,
-          network: "Monad Testnet",
-          paymentMethod: 'x402',
-        });
+        const params = new URLSearchParams();
+        params.set("slotId", String(paymentInfo.slotId ?? ""));
+        params.set("price", String(paymentInfo.price ?? ""));
+        params.set("bidAmount", String(customAmount ?? ""));
+        params.set("size", String(paymentInfo.size ?? ""));
+        params.set("transactionHash", "x402-payment");
+        params.set("walletAddress", String(address ?? ""));
+        params.set("network", "Monad Testnet");
+        params.set("paymentMethod", "x402");
         router.push(`/upload?${params.toString()}`);
       }, 1500);
-
     } catch (error) {
-      console.error('x402 payment error:', error);
+      console.error("x402 payment error:", error);
       setConnectionStatus({
         type: "error",
         message: error instanceof Error ? error.message : "x402 payment failed",
@@ -418,33 +438,42 @@ function CheckoutPageContent() {
                     type="radio"
                     id="payMon"
                     name="paymentMethod"
-                    checked={paymentMethod === 'mon'}
-                    onChange={() => setPaymentMethod('mon')}
+                    checked={paymentMethod === "mon"}
+                    onChange={() => setPaymentMethod("mon")}
                     className="rounded"
                   />
-                  <label htmlFor="payMon" className="text-foreground">Pay with MON</label>
+                  <label htmlFor="payMon" className="text-foreground">
+                    Pay with MON
+                  </label>
                 </div>
                 <div className="flex items-center gap-2">
                   <input
                     type="radio"
                     id="payX402"
                     name="paymentMethod"
-                    checked={paymentMethod === 'x402'}
-                    onChange={() => setPaymentMethod('x402')}
+                    checked={paymentMethod === "x402"}
+                    onChange={() => setPaymentMethod("x402")}
                     className="rounded"
                   />
-                  <label htmlFor="payX402" className="text-foreground">Pay with x402</label>
+                  <label htmlFor="payX402" className="text-foreground">
+                    Pay with x402
+                  </label>
                 </div>
                 <div className="flex items-center gap-2">
                   <input
                     type="radio"
                     id="payContract"
                     name="paymentMethod"
-                    checked={paymentMethod === 'contract'}
-                    onChange={() => setPaymentMethod('contract')}
+                    checked={paymentMethod === "contract"}
+                    onChange={() => setPaymentMethod("contract")}
                     className="rounded"
                   />
-                  <label htmlFor="payContract" className="text-muted-foreground">Pay with Contract (USDC)</label>
+                  <label
+                    htmlFor="payContract"
+                    className="text-muted-foreground"
+                  >
+                    Pay with Contract (USDC)
+                  </label>
                 </div>
               </div>
 
@@ -464,22 +493,27 @@ function CheckoutPageContent() {
                   ) : (
                     <Button
                       onClick={handleAction}
-                      disabled={isPending || isMONPending || (paymentMethod === 'x402' && !walletClient)}
+                      disabled={
+                        isPending ||
+                        isMONPending ||
+                        (paymentMethod === "x402" && !walletClient)
+                      }
                       className="w-full font-mono h-12 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20"
                     >
-                      {paymentMethod === 'mon'
+                      {paymentMethod === "mon"
                         ? connectionStatus.type === "loading"
                           ? connectionStatus.message
                           : isBidding
                             ? `Pay ${customAmount} MON & Bid`
                             : `Pay ${customAmount} MON`
-                        : paymentMethod === 'x402'
+                        : paymentMethod === "x402"
                           ? connectionStatus.type === "loading"
                             ? connectionStatus.message
                             : isBidding
                               ? `Pay ${customAmount} & Bid (x402)`
                               : `Pay ${customAmount} (x402)`
-                          : !allowance || (allowance as bigint) < toUSDC(bidAmount)
+                          : !allowance ||
+                              (allowance as bigint) < toUSDC(bidAmount)
                             ? isPending
                               ? "Approving..."
                               : "Approve mUSDC"

@@ -1,25 +1,28 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { applyRateLimit, RATE_LIMITS } from '@/lib/rate-limiter';
-import { prisma } from '@/lib/prisma';
+import { NextRequest, NextResponse } from "next/server";
+import { applyRateLimit, RATE_LIMITS } from "@/lib/rate-limiter";
+import { prisma } from "@/lib/prisma";
 
 async function getLighthouseStorage() {
   try {
-    const { storeAdPlacement } = await import('@/lib/lighthouse-http-storage');
+    const { storeAdPlacement } = await import("@/lib/lighthouse-http-storage");
     return { storeAdPlacement };
   } catch (error) {
-    console.error('Failed to import lighthouse HTTP storage:', error);
-    throw new Error('Lighthouse HTTP storage not available');
+    console.error("Failed to import lighthouse HTTP storage:", error);
+    throw new Error("Lighthouse HTTP storage not available");
   }
 }
 
 export async function OPTIONS(request: NextRequest) {
-  return NextResponse.json({}, {
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  return NextResponse.json(
+    {},
+    {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+      },
     },
-  });
+  );
 }
 
 export async function POST(request: NextRequest) {
@@ -33,46 +36,56 @@ export async function POST(request: NextRequest) {
       return ipRateLimitResult;
     }
 
-    console.log('Upload-ad API called');
+    console.log("Upload-ad API called");
 
     const body = await request.json();
-    console.log('Request body received:', body);
-    
-    const { 
-      slotId, 
-      mediaHash, 
-      paymentData, 
-      paymentInfo 
-    } = body;
+    console.log("Request body received:", body);
+
+    const { slotId, mediaHash, paymentData, paymentInfo } = body;
 
     if (!slotId || !mediaHash || !paymentData || !paymentInfo) {
-      console.error('Missing required fields:', { slotId, mediaHash, paymentData, paymentInfo });
+      console.error("Missing required fields:", {
+        slotId,
+        mediaHash,
+        paymentData,
+        paymentInfo,
+      });
       return NextResponse.json(
-        { error: 'Missing required fields', received: { slotId, mediaHash, paymentData, paymentInfo } },
-        { status: 400 }
+        {
+          error: "Missing required fields",
+          received: { slotId, mediaHash, paymentData, paymentInfo },
+        },
+        { status: 400 },
       );
     }
 
-    if (!paymentData.transactionHash || !paymentData.payerAddress || !paymentData.AmountPaid) {
+    if (
+      !paymentData.transactionHash ||
+      !paymentData.payerAddress ||
+      !paymentData.AmountPaid
+    ) {
       return NextResponse.json(
-        { error: 'Invalid payment data. Missing transactionHash, payerAddress, or amountPaid' },
-        { status: 400 }
+        {
+          error:
+            "Invalid payment data. Missing transactionHash, payerAddress, or amountPaid",
+        },
+        { status: 400 },
       );
     }
 
     const walletAddress = paymentData.payerAddress;
-    console.log('Payment data:', paymentData);
+    console.log("Payment data:", paymentData);
 
     const { storeAdPlacement } = await getLighthouseStorage();
-    
+
     const bidAmount = paymentData.bidAmount || paymentData.AmountPaid;
-    
-    console.log('Storing ad placement:', {
+
+    console.log("Storing ad placement:", {
       slotId,
       advertiserWallet: walletAddress,
       contentHash: mediaHash,
       price: bidAmount,
-      durationMinutes: 60
+      durationMinutes: 60,
     });
 
     const result = await storeAdPlacement(
@@ -82,42 +95,26 @@ export async function POST(request: NextRequest) {
       bidAmount,
       60,
       bidAmount,
-      'MON'
+      "MON",
     );
 
-    console.log('Ad placement stored result:', result);
+    console.log("Ad placement stored result:", result);
 
-    try {
-      const payment = await prisma.payment.create({
-        data: {
-          slotId,
-          transactionHash: paymentData.transactionHash,
-          payerAddress: walletAddress.toLowerCase(),
-          amount: bidAmount,
-          currency: 'MON',
-          network: 'monad-testnet',
-          status: 'completed',
-          paymentMethod: paymentData.paymentMethod || 'mon',
-        },
-      });
-      console.log('Payment record created:', payment.id);
-    } catch (dbError) {
-      console.warn('Payment record creation failed (non-critical):', dbError);
-    }
+    // Payment persistence is handled by the bidding/allocation flow that has
+    // the required placement and publisher references.
 
     return NextResponse.json({
       success: true,
       slotId,
       mediaHash,
-      message: 'Ad uploaded successfully',
+      message: "Ad uploaded successfully",
       placement: result,
     });
-
   } catch (error) {
-    console.error('Error in upload-ad API:', error);
+    console.error("Error in upload-ad API:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
+      { error: error instanceof Error ? error.message : "Unknown error" },
+      { status: 500 },
     );
   }
 }
