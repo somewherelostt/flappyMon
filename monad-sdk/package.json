@@ -1,5 +1,5 @@
 {
-  "name": "Monad-sdk",
+  "name": "monad-sdk",
   "version": "1.0.0",
   "description": "Monad SDK for Next.js applications - Easy integration of decentralized ad slots",
   "main": "dist/index.js",
@@ -38,8 +38,6 @@
     "viem": "^2.0.0"
   },
   "devDependencies": {
-    "@types/react": "^18.0.0",
-    "@types/react-dom": "^18.0.0",
     "typescript": "^5.0.0"
   },
   "repository": {

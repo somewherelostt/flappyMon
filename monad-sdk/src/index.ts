@@ -1,6 +1,20 @@
 // Main exports
-export { MonadProvider, useMonadContext, useMonadConfig, useMonadApi } from './components/MonadProvider';
+export { MonadProvider, useMonadContext, useMonadConfig, useMonadApi, useMonadContracts, useMonadChainId } from './components/MonadProvider';
 export { MonadSlot } from './components/MonadSlot';
+
+// Contract hooks — on-chain reads and writes via wagmi
+export {
+  useActiveSlot,
+  useBidQueue,
+  useUSDCBalance,
+  useUSDCAllowance,
+  useVaultBalance,
+  usePendingRefund,
+  useApproveUSDC,
+  usePurchaseSlot,
+  useClaimRefund,
+  useRotateAd,
+} from './hooks/useMonadContract';
 
 // Type exports
 export type {
@@ -17,7 +31,9 @@ export type {
   QueueResponse,
   MonadError,
   UseMonadSlotReturn,
-  MonadContextType
+  MonadContextType,
+  OnChainAdSlot,
+  OnChainBidQueueEntry,
 } from './types';
 
 // Utility exports
@@ -32,10 +48,12 @@ export {
   generateUploadUrl,
   fetchAdData,
   fetchQueueInfo,
+  readOnChainSlot,
+  verifyTxOnChain,
   createAdDataHook,
   generateSlotId,
   parseSlotConfigFromUrl,
-  trackAdEvent
+  trackAdEvent,
 } from './utils';
 
 // Default export

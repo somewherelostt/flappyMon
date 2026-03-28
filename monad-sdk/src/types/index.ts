@@ -21,7 +21,7 @@ export interface MonadSlotConfig {
   /** Unique identifier for the ad slot */
   slotId: string;
   /** Size of the ad slot */
-  size: 'banner' | 'square' | 'mobile' | 'sidebar';
+  size: 'banner' | 'square' | 'mobile' | 'sidebar' | 'leaderboard' | 'card';
   /** Base price in USDC */
   price: string;
   /** Available duration options */
@@ -81,6 +81,8 @@ export interface AdData {
   advertiserAddress?: string;
   /** Slot information */
   slotInfo?: SlotInfo;
+  /** IPFS Hash for gateway fallback */
+  ipfsHash?: string;
 }
 
 // Slot Information
@@ -99,6 +101,22 @@ export interface QueueInfo {
   totalInQueue: number;
   nextActivation?: string;
   isAvailable: boolean;
+}
+
+// On-Chain Types (mirrors MonadAdRegistry / MonadAdMarket structs)
+export interface OnChainAdSlot {
+  owner:    `0x${string}`;
+  ipfsHash: string;
+  price:    bigint;
+  expiry:   bigint;
+  isActive: boolean;
+}
+
+export interface OnChainBidQueueEntry {
+  bidder:      `0x${string}`;
+  bidAmount:   bigint;
+  ipfsHash:    string;
+  durationSecs: bigint;
 }
 
 // Provider Props

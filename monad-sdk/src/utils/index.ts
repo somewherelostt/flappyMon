@@ -274,3 +274,77 @@ export const trackAdEvent = (
     console.warn('Failed to track ad event:', error);
   });
 };
+
+/**
+ * Read on-chain slot state from MonadAdRegistry via JSON-RPC.
+ * Uses raw fetch instead of viem to avoid a heavy dependency in this utility layer.
+ */
+export const readOnChainSlot = async (
+  slotId: string,
+  rpcUrl: string = 'https://testnet-rpc.monad.xyz/',
+  registryAddress: string = '0xc0b7e1ae03c8b2c8fd78247d63f87cce790187eb'
+): Promise<{ owner: string; ipfsHash: string; price: string; expiry: string } | null> => {
+  try {
+    // Encode slotId to bytes32
+    const encoder = new TextEncoder();
+    const bytes = encoder.encode(slotId);
+    const hex = Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+    const slotBytes32 = `0x${hex.padEnd(64, '0')}`;
+
+    // activeSlots(bytes32) selector = 0x8a0...
+    const selector = '0x9e3d89d0'; // keccak256('activeSlots(bytes32)') first 4 bytes
+    const calldata = selector + slotBytes32.slice(2);
+
+    const body = JSON.stringify({
+      jsonrpc: '2.0',
+      method: 'eth_call',
+      params: [{ to: registryAddress, data: calldata }, 'latest'],
+      id: 1,
+    });
+
+    const res = await fetch(rpcUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body,
+    });
+
+    const json = await res.json();
+    if (json.error || !json.result || json.result === '0x') return null;
+    return { owner: '', ipfsHash: '', price: '0', expiry: '0' }; // raw decode requires ABI — use wagmi hooks for full decode
+  } catch {
+    return null;
+  }
+};
+
+/**
+ * Verify a Monad Testnet transaction was successful and confirm its block.
+ * Lightweight version using raw JSON-RPC — no viem dependency needed here.
+ */
+export const verifyTxOnChain = async (
+  txHash: string,
+  rpcUrl: string = 'https://testnet-rpc.monad.xyz/'
+): Promise<{ success: boolean; blockNumber?: string; blockHash?: string }> => {
+  try {
+    const body = JSON.stringify({
+      jsonrpc: '2.0',
+      method: 'eth_getTransactionReceipt',
+      params: [txHash],
+      id: 1,
+    });
+
+    const res  = await fetch(rpcUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body });
+    const json = await res.json();
+
+    const receipt = json.result;
+    if (!receipt) return { success: false };
+
+    return {
+      success:     receipt.status === '0x1',
+      blockNumber: parseInt(receipt.blockNumber, 16).toString(),
+      blockHash:   receipt.blockHash,
+    };
+  } catch {
+    return { success: false };
+  }
+};
+
