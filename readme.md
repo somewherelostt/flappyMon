@@ -1,3 +1,7 @@
+![RentMyWebsite Preview](public/rentmywebsite.png)
+
+*Live demo:* [https://mon-p92zu4kej-maazs-projects-f1a8ea62.vercel.app/](https://mon-p92zu4kej-maazs-projects-f1a8ea62.vercel.app/)
+
 # Mon-AD: Decentralized Advertising Platform on Monad
 
 A full-stack decentralized advertising platform built on Monad Testnet. This platform enables publishers to monetize ad slots and advertisers to purchase/bid on ad placements using USDC on Monad.
@@ -131,6 +135,7 @@ export default function MyPage() {
 ## Demo Slots
 
 The app includes these demo slots:
+
 - `demo-header` - Banner (728x90)
 - `demo-square` - Square (300x250)
 - `demo-mobile` - Mobile (320x60)
