@@ -1,188 +1,119 @@
 import { MonadProvider, MonadSlot } from "../components/Monad";
 import Link from "next/link";
+import { ArrowRight, Zap, Target, Activity } from "lucide-react";
 
-const Home = () => {
+export default function Home() {
   return (
     <MonadProvider publisherWallet="0x6d63C3DD44983CddEeA8cB2e730b82daE2E91E32">
-      <main className="min-h-screen bg-background">
-        {/* Hero Section */}
-        <div className="max-w-7xl mx-auto px-4 py-16">
-          <div className="text-center mb-16">
-            <h1 className="text-5xl font-mono font-bold text-foreground mb-6">
-              Ad-402 Platform
-            </h1>
-            <p className="text-xl font-mono text-muted-foreground mb-8 max-w-3xl mx-auto">
-              The future of decentralized advertising. Publishers get paid instantly, 
-              advertisers place ads directly without intermediaries.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link 
-                href="/blog" 
-                className="bg-primary text-primary-foreground px-8 py-3 hover:bg-primary/90 transition-colors font-mono"
-              >
-                View Demo Blog
-              </Link>
-              <Link 
-                href="/example-ads" 
-                className="bg-background text-foreground px-8 py-3 border border-border hover:bg-secondary transition-colors font-mono"
-              >
-                See Ad Examples
-              </Link>
-              <Link 
-                href="/dashboard" 
-                className="bg-background text-foreground px-8 py-3 border border-border hover:bg-secondary transition-colors font-mono"
-              >
-                Publisher Dashboard
-              </Link>
-            </div>
-          </div>
+      <main className="min-h-screen relative overflow-hidden bg-background">
+        
+        {/* Neon Monad Glowing Orbs for deep background atmosphere */}
+        <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-monad/20 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] bg-neon-magenta/10 rounded-full blur-[150px] pointer-events-none" />
 
-          {/* Demo Ad Slots */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
-            <div className="bg-card p-6 border border-border shadow-sm">
-              <h3 className="text-lg font-mono font-semibold mb-4 text-card-foreground">Header Banner</h3>
-              <MonadSlot
-                slotId="demo-header"
-                size="banner"
-                price="0.25"
-                durations={['1h', '6h', '24h']}
-                category="demo"
-              />
-            </div>
-            
-            <div className="bg-card p-6 border border-border shadow-sm">
-              <h3 className="text-lg font-mono font-semibold mb-4 text-card-foreground">Square Ad</h3>
-              <MonadSlot
-                slotId="demo-square"
-                size="square"
-                price="0.15"
-                durations={['30m', '1h', '2h']}
-                category="demo"
-              />
-            </div>
-            
-            <div className="bg-card p-6 border border-border shadow-sm">
-              <h3 className="text-lg font-mono font-semibold mb-4 text-card-foreground">Mobile Banner</h3>
-              <MonadSlot
-                slotId="demo-mobile"
-                size="mobile"
-                price="0.10"
-                durations={['1h', '6h', '12h']}
-                category="demo"
-              />
-            </div>
-          </div>
-
-          {/* Features Section */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-            <div className="text-center">
-              <div className="bg-secondary w-16 h-16 flex items-center justify-center mx-auto mb-4 border border-border">
-                <svg className="w-8 h-8 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-mono font-semibold mb-2 text-foreground">Instant Payments</h3>
-              <p className="text-muted-foreground font-mono">
-                Publishers receive payments instantly using x402 protocol. No waiting periods or complex withdrawal processes.
-              </p>
-            </div>
-            
-            <div className="text-center">
-              <div className="bg-secondary w-16 h-16 flex items-center justify-center mx-auto mb-4 border border-border">
-                <svg className="w-8 h-8 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-mono font-semibold mb-2 text-foreground">No Intermediaries</h3>
-              <p className="text-muted-foreground font-mono">
-                Direct connection between publishers and advertisers. Lower fees, more transparency, better relationships.
-              </p>
-            </div>
-            
-            <div className="text-center">
-              <div className="bg-secondary w-16 h-16 flex items-center justify-center mx-auto mb-4 border border-border">
-                <svg className="w-8 h-8 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-mono font-semibold mb-2 text-foreground">Real-time Analytics</h3>
-              <p className="text-muted-foreground font-mono">
-                Track views, clicks, and conversions in real-time. Get insights into your ad performance instantly.
-              </p>
-            </div>
-          </div>
-
-          {/* How It Works */}
-          <div className="bg-card border border-border shadow-sm p-8 mb-16">
-            <h2 className="text-3xl font-mono font-bold text-center mb-8 text-card-foreground">How It Works</h2>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-              <div className="text-center">
-                <div className="bg-primary text-primary-foreground w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-mono font-bold">
-                  1
-                </div>
-                <h3 className="font-mono font-semibold mb-2 text-foreground">Register Slots</h3>
-                <p className="text-muted-foreground text-sm font-mono">
-                  Publishers register ad slots on their websites with pricing and availability.
-                </p>
+        <div className="relative z-10 max-w-7xl mx-auto px-6 py-20 lg:py-32">
+          
+          {/* HERO SECTION */}
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-16">
+            <div className="flex-1 space-y-8">
+              <div className="inline-flex items-center space-x-2 glass-panel px-4 py-2 rounded-full border-monad/30">
+                <span className="w-2 h-2 rounded-full bg-neon-cyan animate-pulse" />
+                <span className="text-sm font-mono tracking-wider text-neon-cyan uppercase">10,000 TPS Ad Protocol</span>
               </div>
               
-              <div className="text-center">
-                <div className="bg-primary text-primary-foreground w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-mono font-bold">
-                  2
-                </div>
-                <h3 className="font-mono font-semibold mb-2 text-foreground">Browse & Select</h3>
-                <p className="text-muted-foreground text-sm font-mono">
-                  Advertisers browse available slots and select the ones that fit their needs.
-                </p>
-              </div>
+              <h1 className="text-6xl lg:text-8xl font-sans font-bold leading-tight tracking-tighter text-foreground drop-shadow-2xl">
+                OWN <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-monad to-neon-cyan">THE ATTENTION.</span>
+              </h1>
               
-              <div className="text-center">
-                <div className="bg-primary text-primary-foreground w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-mono font-bold">
-                  3
-                </div>
-                <h3 className="font-mono font-semibold mb-2 text-foreground">Pay & Place</h3>
-                <p className="text-muted-foreground text-sm font-mono">
-                  Advertisers pay instantly using x402 and upload their ad content.
-                </p>
-              </div>
+              <p className="text-lg font-mono text-muted-foreground max-w-xl leading-relaxed">
+                By-pass legacy ad-networks. Buy slots natively on Monad via x402 escrows. 
+                Sub-second finality. Zero intermediaries. Absolute ownership.
+              </p>
               
-              <div className="text-center">
-                <div className="bg-primary text-primary-foreground w-12 h-12 flex items-center justify-center mx-auto mb-4 text-xl font-mono font-bold">
-                  4
-                </div>
-                <h3 className="font-mono font-semibold mb-2 text-foreground">Go Live</h3>
-                <p className="text-muted-foreground text-sm font-mono">
-                  Ads go live immediately and publishers start earning revenue.
-                </p>
+              <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                <Link 
+                  href="/dashboard"
+                  className="group relative inline-flex items-center justify-center px-8 py-4 font-mono font-bold text-background bg-foreground hover:bg-monad transition-all duration-300"
+                >
+                  START PUBLISHING
+                  <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </Link>
+                <Link 
+                  href="/example-ads"
+                  className="inline-flex items-center justify-center px-8 py-4 font-mono font-bold text-foreground border border-border glass-panel hover:border-monad/50 transition-all duration-300"
+                >
+                  LIVE AUCTIONS
+                </Link>
               </div>
             </div>
-          </div>
 
-          {/* CTA Section */}
-          <div className="text-center bg-primary text-primary-foreground p-12 border border-border">
-            <h2 className="text-3xl font-mono font-bold mb-4">Ready to Get Started?</h2>
-            <p className="text-xl mb-8 font-mono opacity-90">
-              Join the decentralized advertising revolution today.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link 
-                href="/blog" 
-                className="bg-background text-foreground px-8 py-3 hover:bg-secondary transition-colors font-mono border border-border"
-              >
-                Try Demo
-              </Link>
-              <Link 
-                href="/dashboard" 
-                className="bg-secondary text-secondary-foreground px-8 py-3 hover:bg-secondary/80 transition-colors font-mono border border-border"
-              >
-                Start Publishing
-              </Link>
+            {/* FLOATING MARKETPLACE COMPOSITION */}
+            <div className="flex-1 relative w-full aspect-square hidden lg:block">
+              {/* Main Premium Slot */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md glass-panel p-6 border-monad/40 shadow-monad-glow glow-hover z-20 transform -rotate-2 hover:rotate-0 transition-transform duration-500">
+                <div className="flex justify-between items-center border-b border-border/50 pb-4 mb-4">
+                  <h3 className="font-sans text-xl font-bold tracking-tight">PREMIUM HEADER</h3>
+                  <span className="text-neon-cyan font-mono text-sm bg-neon-cyan/10 px-2 py-1">LIVE</span>
+                </div>
+                <MonadSlot
+                  slotId="demo-hero-premium"
+                  size="banner"
+                  price="5.00"
+                  durations={['1h', '24h']}
+                  category="premium"
+                />
+              </div>
+
+              {/* Background Queued Slot */}
+              <div className="absolute top-[10%] right-[-5%] w-full max-w-sm glass-panel p-6 border-border blur-[2px] opacity-60 z-10 transform rotate-6">
+                <div className="flex justify-between items-center border-b border-border/50 pb-4 mb-4">
+                  <h3 className="font-sans text-lg font-bold text-muted-foreground">SIDEBAR TILE</h3>
+                  <span className="text-neon-magenta font-mono text-xs border border-neon-magenta/50 px-2 py-1">QUEUED</span>
+                </div>
+                <MonadSlot
+                  slotId="demo-hero-background"
+                  size="square"
+                  price="1.25"
+                  durations={['1h']}
+                  category="standard"
+                />
+              </div>
             </div>
           </div>
         </div>
+
+        {/* METRICS & FEATURES GRID */}
+        <div className="relative z-10 border-t border-border/50 bg-black/50 backdrop-blur-3xl mt-20">
+          <div className="max-w-7xl mx-auto px-6 py-24 grid grid-cols-1 md:grid-cols-3 gap-12">
+            
+            <div className="space-y-4 glow-hover p-6 border border-transparent">
+              <Zap className="w-10 h-10 text-neon-cyan mb-6" />
+              <h3 className="text-2xl font-sans font-bold tracking-tight">Atomic Finality</h3>
+              <p className="text-muted-foreground font-mono text-sm leading-relaxed">
+                Powered by Monad's parallel execution. Bids settle in milliseconds rendering legacy Web2 ad-auctions obsolete.
+              </p>
+            </div>
+
+            <div className="space-y-4 glow-hover p-6 border border-transparent">
+              <Activity className="w-10 h-10 text-monad mb-6" />
+              <h3 className="text-2xl font-sans font-bold tracking-tight">x402 Facilitators</h3>
+              <p className="text-muted-foreground font-mono text-sm leading-relaxed">
+                Seamless gasless onboarding via HTTP 402 endpoints. Native USDC cross-chain payment proxying out-of-the-box.
+              </p>
+            </div>
+
+            <div className="space-y-4 glow-hover p-6 border border-transparent">
+              <Target className="w-10 h-10 text-neon-magenta mb-6" />
+              <h3 className="text-2xl font-sans font-bold tracking-tight">Zero Extraction</h3>
+              <p className="text-muted-foreground font-mono text-sm leading-relaxed">
+                Direct Publisher-to-Advertiser pathways. Pull-over-push escrow architecture guarantees unruggable slot ownership.
+              </p>
+            </div>
+
+          </div>
+        </div>
+
       </main>
     </MonadProvider>
   );
-};
-
-export default Home;
+}
