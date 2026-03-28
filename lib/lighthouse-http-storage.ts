@@ -39,13 +39,19 @@ let cachedData: StorageData | null = null;
 let lastFetchTime = 0;
 const CACHE_DURATION = 30000; // 30 seconds cache
 
+const IPFS_GATEWAYS = [
+  'https://gateway.lighthouse.storage/ipfs/',
+  'https://ipfs.io/ipfs/',
+  'https://dweb.link/ipfs/'
+];
+
 /**
  * Get the current storage data from IPFS using HTTP
  */
 async function getStorageData(): Promise<StorageData> {
+  const now = Date.now();
   try {
     // Check cache first
-    const now = Date.now();
     if (cachedData && (now - lastFetchTime) < CACHE_DURATION) {
       return cachedData;
     }
@@ -58,6 +64,7 @@ async function getStorageData(): Promise<StorageData> {
     const storageHash = await getLighthouseHash();
     if (!storageHash) {
       // Initialize with empty data if no storage hash exists
+      // In production, you'd set LIGHTHOUSE_STORAGE_HASH in environment
       const initialData: StorageData = {
         activePlacements: {},
         slotQueues: {},
@@ -65,20 +72,38 @@ async function getStorageData(): Promise<StorageData> {
       };
       cachedData = initialData;
       lastFetchTime = now;
+      console.log('Initialized with empty data - configure LIGHTHOUSE_STORAGE_HASH for persistence');
       return initialData;
     }
 
-    const response = await fetch(`https://gateway.lighthouse.storage/ipfs/${storageHash}`);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch storage data: ${response.status}`);
+    // Try multiple gateways for high availability
+    let data: StorageData | null = null;
+    let lastError: any = null;
+
+    for (const gateway of IPFS_GATEWAYS) {
+      try {
+        console.log(`Fetching storage from gateway: ${gateway}`);
+        const response = await fetch(`${gateway}${storageHash}`, { signal: AbortSignal.timeout(15000) });
+        if (response.ok) {
+          data = await response.json();
+          break;
+        }
+      } catch (err) {
+        lastError = err;
+        console.warn(`Gateway ${gateway} failed:`, err instanceof Error ? err.message : err);
+        continue;
+      }
     }
 
-    const data = await response.json();
+    if (!data) {
+      throw lastError || new Error('All IPFS gateways failed to resolve');
+    }
+
     cachedData = data;
     lastFetchTime = now;
     return data;
   } catch (error) {
-    console.error('Error fetching storage data:', error);
+    console.error('Error in getStorageData:', error);
     // Return empty data if fetch fails
     const emptyData: StorageData = {
       activePlacements: {},
@@ -164,7 +189,9 @@ export async function storeAdPlacement(
     slotId,
     placementId,
     advertiserWallet,
-    contentUrl: `https://gateway.lighthouse.storage/ipfs/${contentHash}`,
+    contentUrl: contentHash.startsWith('/') 
+      ? contentHash  // Local path
+      : `https://gateway.lighthouse.storage/ipfs/${contentHash}`,  // IPFS hash
     contentHash,
     price,
     currency,

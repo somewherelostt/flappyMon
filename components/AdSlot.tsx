@@ -1,5 +1,6 @@
 // components/AdSlot.tsx
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { AdService } from '@/lib/adService';
 import { AdAnalytics } from '@/lib/adAnalytics';
 import { AdFallbacks } from '@/lib/adFallbacks';
@@ -145,28 +146,28 @@ export const AdSlot: React.FC<AdSlotProps> = ({
           backgroundColor: 'hsl(var(--background))'
         }}
       >
-        <img
-          src={adContent}
-          alt="Advertisement"
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            cursor: 'pointer'
-          }}
-          onError={() => {
-            setError('Failed to load ad image');
-            setAdContent(null);
-          }}
-          onLoad={() => {
-            console.log(`Ad loaded successfully for ${route}:${position}`);
-          }}
-          onClick={() => {
-            // Track ad click
-            const slotIndex = AdService.generateSlotIndex(route, position, size);
-            AdAnalytics.trackAdClick(slotIndex, adContent);
-          }}
-        />
+        <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+          <Image
+            src={adContent}
+            alt="Advertisement"
+            fill
+            className="object-cover cursor-pointer"
+            sizes={(size === 'banner' || size === 'sidebar') ? '100vw' : '300px'}
+            priority={size === 'banner'}
+            onError={() => {
+              setError('Failed to load ad image');
+              setAdContent(null);
+            }}
+            onLoad={() => {
+              console.log(`Ad loaded successfully for ${route}:${position}`);
+            }}
+            onClick={() => {
+              // Track ad click
+              const slotIndex = AdService.generateSlotIndex(route, position, size);
+              AdAnalytics.trackAdClick(slotIndex, adContent);
+            }}
+          />
+        </div>
       </div>
     );
   }

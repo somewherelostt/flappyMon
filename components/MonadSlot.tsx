@@ -1,6 +1,7 @@
 // 3. components/MonadSlot.tsx
 'use client';
 
+import Image from 'next/image';
 import React, { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -153,25 +154,23 @@ export const MonadSlot: React.FC<MonadSlotProps> = ({
                   margin: '0 auto'
                 }}
               >
-                <img
-                  src={adContent}
-                  alt="Advertisement"
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                    cursor: 'pointer'
-                  }}
-                  onClick={() => {
-                    // Track ad click if needed
-                    console.log(`Ad clicked: ${slotId}`);
-                  }}
-                  onError={() => {
-                    // If image fails to load, fall back to placeholder
-                    setHasAd(false);
-                    setAdContent(null);
-                  }}
-                />
+                <div style={{ width: '100%', height: '100%', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Image
+                    src={adContent}
+                    alt="Advertisement"
+                    fill
+                    className="object-contain cursor-pointer"
+                    sizes={`${dimensions.width}px`}
+                    priority={size === 'banner' || size === 'leaderboard'}
+                    onClick={() => {
+                      console.log(`Ad clicked: ${slotId}`);
+                    }}
+                    onError={() => {
+                      setHasAd(false);
+                      setAdContent(null);
+                    }}
+                  />
+                </div>
               </div>
               
               {/* Book Next Slot Button */}
