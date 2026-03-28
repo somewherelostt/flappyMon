@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, Suspense } from "react";
+import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   Card,
@@ -223,69 +224,91 @@ function UploadPageContent() {
     [],
   );
 
-  // Upload to Lighthouse
+  // Upload to Lighthouse via local backend proxy (Fixes CORS and timeout issues)
   const uploadToLighthouse = async (file: File): Promise<string> => {
-    const formData = new FormData();
-    formData.append("file", file);
+    try {
+      console.log(`🚀 Proxying upload for ${file.name} to local storage API...`);
+      const formData = new FormData();
+      formData.append("file", file);
 
-    // Note: You'll need to add your Lighthouse API key as an environment variable
-    const LIGHTHOUSE_API_KEY = process.env.NEXT_PUBLIC_LIGHTHOUSE_API_KEY;
+      const response = await fetch("/api/storage/upload", {
+        method: "POST",
+        body: formData,
+        // The backend proxy handles retries and has a 60s timeout
+      });
 
-    if (
-      !LIGHTHOUSE_API_KEY ||
-      LIGHTHOUSE_API_KEY === "your_lighthouse_api_key_here"
-    ) {
-      throw new Error(
-        "Lighthouse API key not configured. Please add NEXT_PUBLIC_LIGHTHOUSE_API_KEY to your .env.local file. Get your API key from https://lighthouse.storage/",
-      );
+      if (!response.ok) {
+        const errorResult = await response.json();
+        throw new Error(errorResult.error || `Upload failed: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      console.log(`✅ Proxy upload successful:`, result.Hash);
+      return result.Hash;
+    } catch (err: any) {
+      console.error("❌ Storage proxy failed:", err);
+      throw err;
     }
-
-    const response = await fetch("https://node.lighthouse.storage/api/v0/add", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LIGHTHOUSE_API_KEY}`,
-      },
-      body: formData,
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Lighthouse upload failed: ${errorText}`);
-    }
-
-    const result = await response.json();
-    return result.Hash;
   };
 
-  // Store ad record in database
-  const storeAdRecord = async (mediaHash: string): Promise<void> => {
-    if (!paymentData || !paymentInfo)
-      throw new Error("Payment data not available");
+    // Store ad record in database
+    const storeAdRecord = async (mediaHash: string): Promise<void> => {
+      if (!paymentData || !paymentInfo)
+        throw new Error("Payment data not available");
 
-    const adRecord = {
-      slotId: paymentInfo.slotId,
-      mediaHash: mediaHash,
-      paymentData: paymentData,
-      paymentInfo: paymentInfo,
+      const adRecord = {
+        slotId: paymentInfo.slotId,
+        mediaHash: mediaHash,
+        paymentData: {
+          ...paymentData,
+          transactionHash: paymentData.txHash, // Ensure correct field name
+          payerAddress: paymentData.payerAddress,
+          AmountPaid: paymentData.AmountPaid,
+        },
+        paymentInfo: paymentInfo,
+      };
+
+      console.log("Storing ad record (local DB):", adRecord);
+
+      const response = await fetch("/api/upload-ad", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(adRecord),
+      });
+
+      if (!response.ok) {
+        const errorResult = await response.json();
+        throw new Error(errorResult.error || "Failed to store ad record");
+      }
+
+      // 🔥 CALL HASH SERVICE (Facilitator) TO SYNC IPFS 🔥
+      try {
+        console.log("🚀 Notifying Facilitator for IPFS Sync...");
+        // Use local service if vercel isn't reachable
+        const serviceUrl = window.location.hostname === 'localhost' 
+          ? 'http://localhost:4000/hashes' 
+          : HASH_SERVICE_ENDPOINT;
+
+        const syncResponse = await fetch(`${serviceUrl}/verify-tx`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            txHash: paymentData.txHash,
+            expectedSlotId: paymentInfo.slotId,
+            expectedBuyer: paymentData.payerAddress
+          })
+        });
+        
+        if (syncResponse.ok) {
+          const syncData = await syncResponse.json();
+          console.log("✅ Facilitator Sync Complete:", syncData);
+        }
+      } catch (syncErr) {
+        console.warn("⚠️ Facilitator sync failed, but local DB updated:", syncErr);
+      }
     };
-
-    console.log("Storing ad record:", adRecord);
-
-    const response = await fetch("/api/upload-ad", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(adRecord),
-    });
-
-    if (!response.ok) {
-      const errorResult = await response.json();
-      throw new Error(errorResult.error || "Failed to store ad record");
-    }
-
-    return response.json();
-  };
 
   // Handle complete upload process
   const handleUpload = async () => {
@@ -404,7 +427,7 @@ function UploadPageContent() {
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Amount:</span>
                 <span className="text-foreground">
-                  {paymentData.bidAmount || paymentInfo.price} USDC
+                  {paymentData.bidAmount || paymentInfo.price} MON
                   {paymentData.bidAmount &&
                     paymentData.bidAmount !== paymentInfo.price && (
                       <span className="text-xs text-muted-foreground ml-1">
@@ -474,11 +497,13 @@ function UploadPageContent() {
                     </Button>
                   </div>
                   {previewUrl && (
-                    <div className="mt-4">
-                      <img
+                    <div className="mt-4 relative h-32 w-full overflow-hidden border border-border">
+                      <Image
                         src={previewUrl}
                         alt="Preview"
-                        className="max-w-full h-32 object-cover border border-border"
+                        fill
+                        unoptimized
+                        className="object-cover"
                       />
                     </div>
                   )}

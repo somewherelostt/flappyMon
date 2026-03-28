@@ -8,6 +8,8 @@ const defaultSlots: Record<string, { size: string; width: number; height: number
   'demo-header': { size: 'banner', width: 728, height: 90 },
   'demo-square': { size: 'square', width: 300, height: 250 },
   'demo-mobile': { size: 'mobile', width: 320, height: 60 },
+  'demo-hero-background': { size: 'banner', width: 1200, height: 400 },
+  'demo-hero-premium': { size: 'leaderboard', width: 970, height: 250 },
 
   // Common production slot types
   'header-banner': { size: 'banner', width: 728, height: 90 },
