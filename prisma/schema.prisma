@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -35,10 +35,10 @@ model AdSlot {
   size              String
   width             Int
   height            Int
-  basePrice         Decimal  @map("base_price") @db.Decimal(10, 6)
+  basePrice         Float     @map("base_price")
   currency          String   @default("USDC")
   network           String   @default("base")
-  durationOptions   String[] @map("duration_options")
+  durationOptions   String   @default("30m,1h,6h,24h") @map("duration_options")
   category          String?
   moderationLevel   String   @default("medium") @map("moderation_level")
   active            Boolean  @default(true)
@@ -62,7 +62,7 @@ model AdPlacement {
   contentUrl        String?  @map("content_url")
   clickUrl          String?  @map("click_url")
   description       String?
-  price             Decimal  @db.Decimal(10, 6)
+  price             Float
   currency          String   @default("USDC")
   durationMinutes   Int      @map("duration_minutes")
   startsAt          DateTime @map("starts_at")
@@ -109,11 +109,11 @@ model Payment {
   publisherId     String   @map("publisher_id")
   transactionHash String   @map("transaction_hash")
   blockNumber     Int?     @map("block_number")
-  amount          Decimal  @db.Decimal(10, 6)
+  amount          Float
   currency        String   @default("USDC")
   network         String   @default("base")
-  platformFee     Decimal  @db.Decimal(10, 6) @map("platform_fee")
-  publisherRevenue Decimal @db.Decimal(10, 6) @map("publisher_revenue")
+  platformFee     Float    @map("platform_fee")
+  publisherRevenue Float   @map("publisher_revenue")
   status          String   @default("pending")
   verifiedAt      DateTime? @map("verified_at")
   createdAt       DateTime @default(now()) @map("created_at")
@@ -152,7 +152,7 @@ model StorageConfig {
 model Withdrawal {
   id              String   @id @default(cuid())
   publisherId     String   @map("publisher_id")
-  amount          Decimal  @db.Decimal(10, 6)
+  amount          Float
   currency        String   @default("USDC")
   network         String   @default("monad")
   status          String   @default("pending")
@@ -178,7 +178,7 @@ model Bid {
 
   // Bidder info
   advertiserWallet String  @map("advertiser_wallet")
-  bidAmount        Decimal @map("bid_amount") @db.Decimal(10, 6)
+  bidAmount        Float   @map("bid_amount")
 
   // Duration
   durationMinutes Int @map("duration_minutes")
@@ -234,11 +234,11 @@ model PublisherStats {
   // Traffic stats
   totalViews  Int     @default(0) @map("total_views")
   totalClicks Int     @default(0) @map("total_clicks")
-  averageCTR  Decimal @default(0) @db.Decimal(5, 2) @map("average_ctr")
+  averageCTR       Float   @default(0) @map("average_ctr")
 
   // Revenue stats
-  totalRevenue     Decimal @default(0) @db.Decimal(10, 6) @map("total_revenue")
-  averageSlotPrice Decimal @default(0) @db.Decimal(10, 6) @map("average_slot_price")
+  totalRevenue     Float   @default(0) @map("total_revenue")
+  averageSlotPrice Float   @default(0) @map("average_slot_price")
 
   // Activity
   activeSlotsCount Int @default(0) @map("active_slots_count")
@@ -249,7 +249,7 @@ model PublisherStats {
   viewsLast30Days Int @default(0) @map("views_last_30_days")
 
   // Quality
-  approvalRate Decimal @default(100) @db.Decimal(5, 2) @map("approval_rate") // % of bids approved
+  approvalRate Float @default(100) @map("approval_rate") // % of bids approved
 
   updatedAt DateTime @updatedAt @map("updated_at")
   createdAt DateTime @default(now()) @map("created_at")
