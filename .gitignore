@@ -3,12 +3,7 @@
 # dependencies
 /node_modules
 /.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
+.pnp.js
 
 # testing
 /coverage
@@ -28,7 +23,15 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.pnpm-debug.log*
+
+# local env files
+.env*.local
+**/.env
+**/*.env.local
+.env.production
+
+# misc
+t.contractName
 
 # vercel
 .vercel
@@ -37,31 +40,56 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# local env files
-.env
-.env*.local
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+# monad-sdk
+monad-sdk/node_modules
+monad-sdk/dist
 
-# Keep .env.example
-!.env.example
+# services
+service/node_modules
+service/dist
+service/out
 
-# Project analysis and local reports
-ISSUES_REPORT.md
-*.analysis.md
-analysis/
+# contracts (Foundry)
+contracts/out
+contracts/cache
+contracts/broadcast
 
-# monorepo dependency/build caches (all packages)
-node_modules/
-.next/
-dist/
-coverage/
+# database
+*.db
+*.sqlite
+dev.db
+
+# uploads
+public/uploads/
+/uploads/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# misc
+.DS_Store
+*.pem
+.payment-tokens.json
+bun.lock
+yarn.lock
+package-lock.json
+pnpm-lock.yaml
+
+# logs
 *.log
+logs/
 
-# foundry generated artifacts
-contracts/broadcast/
-contracts/cache/
-contracts/out/
-contracts/t.contractName
+# local reports and planning artifacts
+ISSUES_REPORT.md
+
+# legacy layout paths to keep out of this branch
+src/
+app/app/
+
+# temporary and backup files
+*.tmp
+*.temp
+*.bak
