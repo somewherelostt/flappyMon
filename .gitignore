@@ -52,3 +52,16 @@ next-env.d.ts
 ISSUES_REPORT.md
 *.analysis.md
 analysis/
+
+# monorepo dependency/build caches (all packages)
+node_modules/
+.next/
+dist/
+coverage/
+*.log
+
+# foundry generated artifacts
+contracts/broadcast/
+contracts/cache/
+contracts/out/
+contracts/t.contractName
