@@ -37,8 +37,8 @@ const config = {
     },
     extend: {
       fontFamily: {
-        sans: ["var(--font-mono)", "'JetBrains Mono'", "'Courier New'", "monospace"],
-        mono: ["'JetBrains Mono'", "'Courier New'", "monospace"],
+        sans: ["var(--font-sans)", "'Space Grotesk'", "sans-serif"],
+        mono: ["var(--font-mono)", "'JetBrains Mono'", "'Courier New'", "monospace"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -74,6 +74,20 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        monad: {
+          DEFAULT: "#836EF9",
+          glow: "rgba(131, 110, 249, 0.5)",
+        },
+        neon: {
+          cyan: "#00F0FF",
+          magenta: "#FF007F",
+        }
+      },
+      boxShadow: {
+        'monad-glow': '0 0 20px rgba(131, 110, 249, 0.4)',
+        'neon-cyan': '0 0 20px rgba(0, 240, 255, 0.4)',
+        'neon-magenta': '0 0 20px rgba(255, 0, 127, 0.4)',
+        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
       },
       borderRadius: {
         lg: "0px",

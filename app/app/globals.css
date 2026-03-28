@@ -6,60 +6,59 @@
 
 @layer base {
   :root {
-    /* Black, White, Gray Color Palette */
-    --background: 0 0% 100%; /* Pure white */
-    --foreground: 0 0% 0%; /* Pure black */
-    --card: 0 0% 100%; /* Pure white */
-    --card-foreground: 0 0% 0%; /* Pure black */
-    --popover: 0 0% 100%; /* Pure white */
-    --popover-foreground: 0 0% 0%; /* Pure black */
-    --primary: 0 0% 0%; /* Pure black */
-    --primary-foreground: 0 0% 100%; /* Pure white */
-    --secondary: 0 0% 96%; /* Light gray */
-    --secondary-foreground: 0 0% 0%; /* Pure black */
-    --muted: 0 0% 96%; /* Light gray */
-    --muted-foreground: 0 0% 45%; /* Medium gray */
-    --accent: 0 0% 96%; /* Light gray */
-    --accent-foreground: 0 0% 0%; /* Pure black */
-    --destructive: 0 0% 0%; /* Pure black for destructive actions */
-    --destructive-foreground: 0 0% 100%; /* Pure white */
-    --border: 0 0% 90%; /* Light gray border */
-    --input: 0 0% 96%; /* Light gray input background */
-    --ring: 0 0% 0%; /* Pure black focus ring */
-    --radius: 0px; /* No border radius for sharp edges */
-    --chart-1: 0 0% 0%; /* Pure black */
-    --chart-2: 0 0% 25%; /* Dark gray */
-    --chart-3: 0 0% 50%; /* Medium gray */
-    --chart-4: 0 0% 75%; /* Light gray */
-    --chart-5: 0 0% 90%; /* Very light gray */
+    /* Neon Monad Aesthetic Palette */
+    --background: 260 60% 5%; /* Deep void #0a0514 */
+    --foreground: 0 0% 100%; /* Pure white */
+    
+    --card: 260 40% 8%; /* Slightly raised dark plane */
+    --card-foreground: 0 0% 100%;
+    
+    --popover: 260 40% 8%;
+    --popover-foreground: 0 0% 100%;
+    
+    --primary: 249 90% 70%; /* Monad Purple #836EF9 */
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 260 30% 15%; /* Deep subtle highlight */
+    --secondary-foreground: 0 0% 100%;
+    
+    --muted: 260 20% 15%;
+    --muted-foreground: 260 10% 60%;
+    
+    --accent: 184 100% 50%; /* Neon Cyan #00F0FF */
+    --accent-foreground: 0 0% 0%;
+    
+    --destructive: 330 100% 50%; /* Hot Magenta #FF007F */
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 260 30% 18%; /* Dark ethereal boundaries */
+    --input: 260 30% 12%; 
+    --ring: 249 90% 70%; /* Monad Purple focus ring */
+    
+    --radius: 0px; /* Keep sharp architectural edges for brutalist-cyberpunk fusion */
   }
 
   .dark {
-    /* Dark mode with inverted colors */
-    --background: 0 0% 0%; /* Pure black */
-    --foreground: 0 0% 100%; /* Pure white */
-    --card: 0 0% 5%; /* Very dark gray */
-    --card-foreground: 0 0% 100%; /* Pure white */
-    --popover: 0 0% 5%; /* Very dark gray */
-    --popover-foreground: 0 0% 100%; /* Pure white */
-    --primary: 0 0% 100%; /* Pure white */
-    --primary-foreground: 0 0% 0%; /* Pure black */
-    --secondary: 0 0% 10%; /* Dark gray */
-    --secondary-foreground: 0 0% 100%; /* Pure white */
-    --muted: 0 0% 10%; /* Dark gray */
-    --muted-foreground: 0 0% 65%; /* Light gray */
-    --accent: 0 0% 10%; /* Dark gray */
-    --accent-foreground: 0 0% 100%; /* Pure white */
-    --destructive: 0 0% 100%; /* Pure white for destructive actions */
-    --destructive-foreground: 0 0% 0%; /* Pure black */
-    --border: 0 0% 15%; /* Dark gray border */
-    --input: 0 0% 10%; /* Dark gray input background */
-    --ring: 0 0% 100%; /* Pure white focus ring */
-    --chart-1: 0 0% 100%; /* Pure white */
-    --chart-2: 0 0% 75%; /* Light gray */
-    --chart-3: 0 0% 50%; /* Medium gray */
-    --chart-4: 0 0% 25%; /* Dark gray */
-    --chart-5: 0 0% 10%; /* Very dark gray */
+    /* Identical mapping to force dark-mode baseline always */
+    --background: 260 60% 5%;
+    --foreground: 0 0% 100%;
+    --card: 260 40% 8%;
+    --card-foreground: 0 0% 100%;
+    --popover: 260 40% 8%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 249 90% 70%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 260 30% 15%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 260 20% 15%;
+    --muted-foreground: 260 10% 60%;
+    --accent: 184 100% 50%;
+    --accent-foreground: 0 0% 0%;
+    --destructive: 330 100% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 260 30% 18%;
+    --input: 260 30% 12%;
+    --ring: 249 90% 70%;
   }
 }
 
@@ -68,19 +67,24 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
-    font-family: 'JetBrains Mono', 'Courier New', monospace;
-    font-weight: 400;
-    letter-spacing: 0.025em;
+    @apply bg-background text-foreground font-mono;
+    /* Optional grid overlay */
+    background-image: linear-gradient(rgba(131, 110, 249, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(131, 110, 249, 0.03) 1px, transparent 1px);
+    background-size: 30px 30px;
+    background-position: center;
+  }
+
+  /* Structural elements use mono, display headers use Space Grotesk */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-sans tracking-tight;
+  }
+
+  .glass-panel {
+    @apply bg-card/60 backdrop-blur-xl border border-border shadow-glass;
   }
   
-  /* Ensure all text elements use monospaced font */
-  h1, h2, h3, h4, h5, h6, p, span, div, button, input, textarea, select {
-    font-family: 'JetBrains Mono', 'Courier New', monospace;
-  }
-  
-  /* Sharp edges for all elements */
-  * {
-    border-radius: 0 !important;
+  .glow-hover:hover {
+    @apply shadow-monad-glow border-primary/50 transition-all duration-300 transform -translate-y-0.5;
   }
 }
